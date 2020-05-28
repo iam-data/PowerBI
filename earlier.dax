@@ -1,0 +1,13 @@
+# IP AUTH REMEDIATION IND = 
+IF (
+    CALCULATE (
+        COUNT( pc_detail[cid] ),
+        FILTER ( pc_instance, pc_instance[ip] = EARLIER ( pc_instance[ip] ) && 
+		( pc_instance[reportkey] = EARLIER ( pc_instance[reportkey] )) && 
+		( pc_instance[ip] = EARLIER ( pc_instance[ip] ))&& 
+		( pc_instance[cid] = EARLIER ( pc_instance[cid] ))
+		(pc_instance[qghostid] = "" || pc_instance[qghostid] = "'-" ))
+    )
+    >1,
+"Yes","No"
+)

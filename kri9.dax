@@ -1,0 +1,75 @@
+# TOTAL DB INSTANCES  = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN
+CALCULATE(
+    COUNT(
+        v_pc_instance[instance]
+    ),
+    ALL(
+        v_pc_instance[# COMPLAINCE RATE]
+    ),
+	FILTER('v_pc_instance', v_pc_instance[report_date] = SELECTEDDATE)
+)+0
+
+
+
+# COUNT DB TIER1 = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN 
+CALCULATE( COUNT( 'v_pc_instance'[instance] ), 
+FILTER('v_pc_instance', 'v_pc_instance'[percentage] >= 100.00),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] >= SELECTEDDATE),
+)+0
+
+
+DB TIER1 RATIO 
+
+# % DB TIER1 RATIO = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN
+CALCULATE(
+DIVIDE(v_pc_instance[# COUNT DB TIER1], v_pc_instance[# TOTAL DB INSTANCES]),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE))+0
+
+COUNT DB TIER2
+
+# COUNT DB TIER2 = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN 
+CALCULATE( COUNT( 'v_pc_instance'[instance] ), 
+FILTER('v_pc_instance', 'v_pc_instance'[percentage] >= 90 &&  'v_pc_instance'[percentage] < 100),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE)
+)+0
+
+
+# % DB TIER2 RATIO = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN
+CALCULATE(
+DIVIDE(v_pc_instance[# COUNT DB TIER2], v_pc_instance[# TOTAL DB INSTANCES]),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE))+0
+
+
+# COUNT DB TIER3 = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN 
+CALCULATE( COUNT( 'v_pc_instance'[instance] ), 
+ FILTER('v_pc_instance', 'v_pc_instance'[percentage] >= 80 &&  'v_pc_instance'[percentage] <= 89.99),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE)
+)+0
+
+
+# % DB TIER3 RATIO = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN
+CALCULATE(
+DIVIDE(v_pc_instance[# COUNT DB TIER3], v_pc_instance[# TOTAL DB INSTANCES]),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE))+0
+
+
+# COUNT DB TIER4 = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN 
+CALCULATE( COUNT( 'v_pc_instance'[instance] ), 
+ FILTER('v_pc_instance', 'v_pc_instance'[percentage] >= 0 &&  'v_pc_instance'[percentage] <= 79.99),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE)
+)+0
+
+# % DB TIER4 RATIO = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN
+CALCULATE(
+DIVIDE(v_pc_instance[# COUNT DB TIER4], v_pc_instance[# TOTAL DB INSTANCES]),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE))+0
+

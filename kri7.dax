@@ -1,0 +1,140 @@
+# TOTAL IP HOSTS  = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(report_date))
+RETURN
+CALCULATE(
+    COUNT(
+        v_pc_instance[ip]
+    ),
+    ALL(
+        v_pc_instance[# COMPLAINCE RATE]
+    ),
+	FILTER('v_pc_instance', v_pc_instance[report_date] = SELECTEDDATE)
+)+0
+
+)+0
+
+
+# COUNT IP TIER1 = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN 
+CALCULATE( COUNT( 'v_pc_instance'[ip] ), 
+FILTER('v_pc_instance', 'v_pc_instance'[percentage] >= 100.00),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] >= SELECTEDDATE),
+)+0
+
+
+IP TIER1 RATIO 
+
+# % IP TIER1 RATIO = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN
+CALCULATE(
+DIVIDE(v_pc_instance[# COUNT IP TIER1], v_pc_instance[# TOTAL IP HOSTS]),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE))+0
+
+COUNT IP TIER2
+
+# COUNT IP TIER2 = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN 
+CALCULATE( COUNT( 'v_pc_instance'[ip] ), 
+FILTER('v_pc_instance', 'v_pc_instance'[percentage] >= 90 &&  'v_pc_instance'[percentage] < 100),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE)
+)+0
+
+
+# % IP TIER2 RATIO = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN
+CALCULATE(
+DIVIDE(v_pc_instance[# COUNT IP TIER2], v_pc_instance[# TOTAL IP HOSTS]),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE))+0
+
+
+# COUNT IP TIER3 = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN 
+CALCULATE( COUNT( 'v_pc_instance'[ip] ), 
+ FILTER('v_pc_instance', 'v_pc_instance'[percentage] >= 80 &&  'v_pc_instance'[percentage] <= 89.99)
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE)
+)+0
+
+
+# % IP TIER3 RATIO = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN
+CALCULATE(
+DIVIDE(v_pc_instance[# COUNT IP TIER3], v_pc_instance[# TOTAL IP HOSTS]),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE))+0
+
+
+# COUNT IP TIER4 = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN 
+CALCULATE( COUNT( 'v_pc_instance'[ip] ), 
+ FILTER('v_pc_instance', 'v_pc_instance'[percentage] >= 0 &&  'v_pc_instance'[percentage] <= 79.99)
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE)
+)+0
+
+# % IP TIER4 RATIO = VAR SELECTEDDATE = SELECTEDVALUE(v_pc_instance[report_date], max(v_pc_instance[report_date]))
+RETURN
+CALCULATE(
+DIVIDE(v_pc_instance[# COUNT IP TIER4], v_pc_instance[# TOTAL IP HOSTS]),
+FILTER('v_pc_instance', 'v_pc_instance'[report_date] = SELECTEDDATE))+0
+
+UNQIUE IP =
+IF (
+    CALCULATE (
+        count ( pc_instance[instancekey] );
+        FILTER ( Table1; pc_instance[ip] = EARLIER ( pc_instance[ip] ) )
+    )
+        = pc_instance[instancekey];
+    0;
+    1
+)
+
+
+Column =
+VAR IDCount =
+    CALCULATE ( COUNTROWS ( ( pc_instance ), ALLEXCEPT ( ( pc_instance, ( pc_instance[ID] ) ) = 1
+VAR Last_Date =
+    Table1[Date]
+        = CALCULATE ( MAX ( Table1[Date] ), ALLEXCEPT ( Table1, Table1[ID] ) )
+RETURN
+    IF ( OR ( IDCount, Last_Date ), "Yes", "No" 
+	
+	
+Duplicates =
+VAR _count =
+    CALCULATE (
+        DISTINCTCOUNT ( pc_instance[ip] ),
+        ALLEXCEPT ( pc_instance, pc_instance[instancekey] )
+    )
+RETURN
+    IF ( _count = 1, "unique", "Dupe" )
+	
+
+Filter Table =
+FILTER (
+    SUMMARIZE (
+        pc_instance,
+        pc_instance[ip],
+		pc_instance[segment],
+		pc_instance[bu],
+		pc_instance[reportkey],
+        "count of instancekey", count ( pc_instance[instancekey] )
+    ),
+    [count of instancekey] > 1
+)
+
+# COUNT IP TIER1 = CALCULATE( COUNT( 'v_pc_instance'[ip] ), FILTER('v_pc_instance', 'v_pc_instance'[percentage] >= 100.00)
+)+0
+
+# COUNT IP TIER2 = CALCULATE( COUNT( 'v_pc_instance'[ip] ), FILTER('v_pc_instance', 'v_pc_instance'[percentage] >= 90 &&  'v_pc_instance'[percentage] < 100)
+)+0
+
+# COUNT IP TIER3 = CALCULATE( COUNT( 'v_pc_instance'[ip] ), FILTER('v_pc_instance', 'v_pc_instance'[percentage] >= 80 &&  'v_pc_instance'[percentage] < 89.99)
+)+0
+
+# COUNT IP TIER4 = CALCULATE( COUNT( 'v_pc_instance'[ip] ), FILTER('v_pc_instance', 'v_pc_instance'[percentage] >= 0 &&  'v_pc_instance'[percentage] < 79.99)
+)+0
+
+# % DB TIER1 COMPLIANCE = DIVIDE(v_pc_instance[# COUNT DB TIER1], v_pc_instance[# TOTAL i INSTANCES])
+
+# % DB TIER2 COMPLIANCE = DIVIDE(v_pc_instance[# COUNT ip TIER2], v_pc_instance[# TOTAL ip INSTANCES])
+
+# % DB TIER3 COMPLIANCE = DIVIDE(v_pc_instance[# COUNT ip TIER3], v_pc_instance[# TOTAL ip INSTANCES])
+
+# % DB TIER4 COMPLIANCE = DIVIDE(v_pc_instance[# COUNT ip TIER4], v_pc_instance[# TOTAL ip INSTANCES])
